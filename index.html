@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SuperDuper Engine</title>
+<link rel="alternate" hreflang="en" href="https://superduperengine.top/en/">
+<link rel="alternate" hreflang="ru" href="https://superduperengine.top/ru/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<script>
+  // The root picks a language: a choice made by hand, else the browser's language.
+  // (On Netlify, _redirects also does it by country; GitHub Pages serves this page as is.)
+  (function () {
+    var choice = null;
+    try { choice = localStorage.getItem("sde.lang"); } catch (error) {}
+    if (choice !== "en" && choice !== "ru") {
+      var language = (navigator.languages && navigator.languages[0]) || navigator.language || "en";
+      choice = /^(ru|be|kk)\b/i.test(language) ? "ru" : "en";
+    }
+    location.replace(choice + "/");
+  })();
+</script>
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0B0D1E; color: #F0EEE9; font: 17px/1.6 system-ui, sans-serif; }
+  a { color: #8EA0FF; margin: 0 10px; }
+  @media (prefers-color-scheme: light) { body { background: #F3F4F9; color: #0B0D1E; } a { color: #2E46E6; } }
+</style>
+</head>
+<body>
+  <p><a href="en/">English</a><a href="ru/" lang="ru">Русский</a></p>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Sky Lantern</title>
+  <meta name="description" content="Sky Lantern: a one-button flying game. Heat the flame, rise, sink, and carry a paper lantern from dusk to dawn.">
+  <meta name="theme-color" content="#07090c">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <style>
+    :root {
+      --bg: #07090c; --fg: #eef2f6; --muted: #9aa7b8; --dim: #66748a; --line: rgba(255, 255, 255, .14);
+      --agent: #c8ff4d; --warm: #ffb347; --cream: #fff1d0;
+      --serif: ui-serif, Georgia, "Times New Roman", "Noto Serif", serif;
+      --sans: "Onest", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; background: var(--bg); color: var(--fg); overflow: hidden; overscroll-behavior: none; }
+    body { display: flex; flex-direction: column; font: 400 16px/1.5 var(--sans); -webkit-font-smoothing: antialiased;
+           padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+    button { font: inherit; color: inherit; }
+    [hidden] { display: none !important; }
+    :focus-visible { outline: 2px solid var(--agent); outline-offset: 3px; border-radius: 8px; }
+
+    .bar { flex: none; display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 16px; }
+    .back { color: var(--muted); text-decoration: none; font-size: 14px; transition: color .15s; }
+    .back:hover { color: var(--agent); }
+    .lang { display: flex; padding: 2px; border: 1px solid var(--line); border-radius: 999px; font: 600 11px/1 ui-monospace, "Cascadia Mono", Consolas, monospace; }
+    .lang button { padding: 7px 10px; border: 0; border-radius: 999px; background: none; color: var(--muted); cursor: pointer; }
+    .lang button:hover { color: var(--fg); }
+    .lang button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+
+    #wrap { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 12px 4px; }
+    #box { flex: 1 1 auto; min-height: 0; width: 100%; display: flex; align-items: center; justify-content: center; }
+    #stage { position: relative; overflow: hidden; border-radius: 14px; background: #0a1138; touch-action: none;
+             -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
+             box-shadow: 0 30px 80px -30px rgba(0, 0, 0, .9), 0 0 0 1px rgba(255, 255, 255, .06); }
+    #game { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; }
+    #made-by { flex: none; margin: 6px 0 0; min-height: 24px; max-width: 760px; text-align: center; font-size: 13px; line-height: 1.5; color: var(--dim); }
+
+    #ui { position: absolute; inset: 0; pointer-events: none; }
+    .tools { position: absolute; top: 8px; right: 8px; display: flex; gap: 6px; pointer-events: auto; }
+    .icon-btn { width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; cursor: pointer;
+                background: rgba(8, 11, 22, .5); color: #dfe7f5; transition: background-color .15s, border-color .15s, transform .15s; }
+    .icon-btn:hover { background: rgba(8, 11, 22, .78); border-color: rgba(255, 255, 255, .3); }
+    .icon-btn:active { transform: scale(.94); }
+    .icon-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .icon-btn .off { display: none; }
+    .icon-btn[aria-pressed="true"] .on { display: none; }
+    .icon-btn[aria-pressed="true"] .off { display: block; }
+
+    .screen { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center;
+              opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .6s ease, visibility 0s linear .6s; }
+    .screen.on { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity .6s ease, visibility 0s; }
+    #screen-title { justify-content: space-between; padding: 7% 24px 6%; cursor: pointer;
+                    background: linear-gradient(to bottom, rgba(4, 7, 20, .55), rgba(4, 7, 20, 0) 38%, rgba(4, 7, 20, 0) 62%, rgba(4, 7, 20, .6)); }
+    #screen-over, #screen-pause { background: radial-gradient(ellipse at center, rgba(4, 7, 20, .55), rgba(4, 7, 20, .82)); }
+    #screen-finish { background: radial-gradient(ellipse at center, rgba(8, 8, 24, .22), rgba(8, 8, 24, .5)); }
+    h1, h2 { margin: 0; font-family: var(--serif); font-weight: 700; color: var(--cream); letter-spacing: -.01em;
+             text-shadow: 0 0 30px rgba(255, 170, 80, .5), 0 2px 0 rgba(0, 0, 0, .25); }
+    h1 { font-size: clamp(36px, 8vw, 84px); line-height: 1.02; }
+    h2 { font-size: clamp(26px, 4.6vw, 40px); line-height: 1.1; }
+    .tagline { max-width: 34ch; margin: 14px auto 0; font-size: clamp(15px, 2.2vw, 19px); line-height: 1.45; color: #cdd7ec; text-wrap: balance; text-shadow: 0 1px 12px rgba(0, 0, 0, .6); }
+    .title-top > *, .title-bottom > * { transform: translateY(8px); opacity: 0; transition: opacity .9s ease, transform .9s cubic-bezier(.2, .8, .2, 1); }
+    #screen-title.on .title-top > *, #screen-title.on .title-bottom > * { transform: none; opacity: 1; }
+    #screen-title.on .tagline { transition-delay: .15s; }
+    #screen-title.on .title-bottom > :nth-child(1) { transition-delay: .35s; }
+    #screen-title.on .title-bottom > :nth-child(2) { transition-delay: .5s; }
+    #screen-title.on .title-bottom > :nth-child(3) { transition-delay: .6s; }
+    .start { padding: 13px 26px; border: 1px solid rgba(255, 214, 150, .5); border-radius: 999px; background: rgba(255, 170, 80, .14); color: var(--cream);
+             font-size: 17px; letter-spacing: .01em; cursor: pointer; animation: breathe 2.6s ease-in-out infinite; }
+    .start:hover { background: rgba(255, 170, 80, .26); }
+    @keyframes breathe { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 179, 71, .0); transform: translateY(0); } 50% { box-shadow: 0 0 28px 2px rgba(255, 179, 71, .35); transform: translateY(-2px); } }
+    .best-line { margin: 14px 0 0; font: 500 13px/1.4 ui-monospace, "Cascadia Mono", Consolas, monospace; color: #b9c6df; min-height: 1.4em; }
+    .keys { margin: 6px auto 0; max-width: 60ch; text-wrap: balance; font-size: 13px; line-height: 1.45; color: #8fa0bd; }
+
+    .card { width: min(92%, 420px); padding: 26px 28px 24px; border: 1px solid rgba(255, 255, 255, .13); border-radius: 22px; background: rgba(10, 14, 28, .72);
+            box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .8); transform: translateY(14px) scale(.98); transition: transform .7s cubic-bezier(.2, .8, .2, 1); }
+    .screen.on .card { transform: none; }
+    .sub { margin: 8px 0 0; color: #b9c6df; font-size: 16px; }
+    .big { margin: 18px 0 0; font: 700 clamp(44px, 9vw, 60px)/1 ui-monospace, "Cascadia Mono", Consolas, monospace; color: #fff1c0; text-shadow: 0 0 24px rgba(255, 190, 90, .45); }
+    .big-label { margin-top: 2px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+    .best { margin: 8px 0 0; min-height: 1.5em; font: 500 14px/1.5 ui-monospace, "Cascadia Mono", Consolas, monospace; color: #b9c6df; }
+    .best.new { color: var(--warm); font-weight: 700; }
+    .stats { margin: 16px 0 0; padding: 12px 0 0; border-top: 1px solid rgba(255, 255, 255, .1); display: grid; grid-template-columns: 1fr auto; gap: 6px 16px; text-align: left; font-size: 14px; }
+    .stats dt { color: var(--muted); }
+    .stats dd { margin: 0; text-align: right; font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; color: var(--fg); }
+    .btn { margin-top: 20px; padding: 14px 26px; border: 0; border-radius: 14px; background: var(--warm); color: #2b1604; font-weight: 700; font-size: 16px; cursor: pointer;
+           transition: transform .15s, background-color .15s, box-shadow .2s; box-shadow: 0 8px 30px -8px rgba(255, 179, 71, .6); }
+    .btn:hover { background: #ffc26b; transform: translateY(-1px); }
+    .btn:active { transform: scale(.98); }
+    .btn[disabled] { opacity: .45; cursor: default; transform: none; }
+
+    .zone-card { position: absolute; left: 0; right: 0; bottom: 17%; text-align: center; pointer-events: none; opacity: 0; }
+    .zone-card.run { animation: zone 4.4s ease both; }
+    .zone-card .num { display: inline-block; padding: 3px 11px; border: 1px solid rgba(255, 220, 160, .45); border-radius: 999px; font: 600 12px/1.4 ui-monospace, "Cascadia Mono", Consolas, monospace;
+                      letter-spacing: .16em; color: #ffe2b0; }
+    .zone-card .name { margin-top: 8px; font: 700 clamp(24px, 4.6vw, 40px)/1.1 var(--serif); color: var(--cream); text-shadow: 0 0 26px rgba(255, 170, 80, .5), 0 2px 10px rgba(0, 0, 0, .5); }
+    @keyframes zone { 0% { opacity: 0; transform: translateY(12px); } 14% { opacity: 1; transform: none; } 78% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(-6px); } }
+    .toast { position: absolute; left: 50%; top: max(64px, 14%); max-width: 88%; padding: 9px 18px; border-radius: 999px; background: rgba(8, 11, 22, .72); border: 1px solid rgba(255, 255, 255, .12);
+             color: #e9eefc; font-size: 15px; text-align: center; opacity: 0; transform: translate(-50%, -8px); transition: opacity .45s ease, transform .45s ease; pointer-events: none; }
+    .toast.on { opacity: 1; transform: translate(-50%, 0); }
+    .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+    #debug { position: absolute; left: 8px; bottom: 8px; padding: 6px 8px; border-radius: 8px; background: rgba(0, 0, 0, .6); color: #b8ffb0;
+             font: 11px/1.35 ui-monospace, Consolas, monospace; white-space: pre; pointer-events: none; }
+
+    @media (max-height: 560px) {
+      .bar { height: 32px; padding: 0 12px; }
+      .back { font-size: 13px; }
+      .lang button { padding: 5px 9px; }
+      #wrap { padding: 0 8px 0; }
+      #made-by { min-height: 20px; margin-top: 3px; font-size: 12px; }
+      #screen-title { padding: 3% 24px 3%; }
+      .card { padding: 16px 22px 16px; }
+      .big { margin-top: 8px; }
+      .stats { margin-top: 10px; padding-top: 8px; gap: 3px 16px; font-size: 13px; }
+      .btn { margin-top: 12px; padding: 10px 22px; }
+      .keys { display: none; }
+    }
+    @media (max-width: 640px) {
+      #wrap { padding: 0 0 2px; }
+      #stage { border-radius: 0; box-shadow: none; }
+      .bar { padding: 0 12px; }
+      .card { padding: 22px 20px 20px; }
+      #made-by { padding: 0 14px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .screen, .screen.on, .card, .toast, .title-top > *, .title-bottom > * { transition-duration: .01s; transition-delay: 0s !important; }
+      .start { animation: none; }
+      .zone-card.run { animation-duration: 3.2s; }
+    }
+  </style>
+  <style>
+    /* the leaderboard panel makes the end cards taller: let them scroll on short screens */
+    #screen-over .card, #screen-finish .card { max-height: calc(100vh - 32px); overflow: auto; }
+    #o-board, #f-board { width: 100%; }
+  </style>
+</head>
+<body>
+  <header class="bar">
+    <a id="back" class="back" href="/en/" data-i18n="back">&larr; Super Duper Engine</a>
+    <div class="lang" role="group" data-i18n-aria="langLabel" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="ru" aria-pressed="false">RU</button>
+    </div>
+  </header>
+
+  <main id="wrap">
+    <div id="box">
+      <div id="stage">
+        <canvas id="game" role="img" data-i18n-aria="canvasLabel" aria-label="Sky Lantern, a one-button flying game. Hold to heat the flame and rise."></canvas>
+        <div id="ui">
+          <div class="tools">
+            <button type="button" class="icon-btn" id="btn-mute" aria-pressed="false" data-i18n-aria="muteOn" aria-label="Turn sound off">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><g class="on"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/></g><g class="off"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></g></svg>
+            </button>
+            <button type="button" class="icon-btn" id="btn-pause" data-i18n-aria="pause" aria-label="Pause">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.5v13M15.5 5.5v13"/></svg>
+            </button>
+          </div>
+
+          <div class="zone-card" id="zone-card" aria-live="polite"><span class="num" id="zone-num">I</span><div class="name" id="zone-name"></div></div>
+          <div class="toast" id="toast" role="status"></div>
+
+          <section class="screen on" id="screen-title" aria-labelledby="t-title">
+            <div class="title-top">
+              <h1 id="t-title" data-i18n="title">Sky Lantern</h1>
+              <p class="tagline" data-i18n="tagline"></p>
+            </div>
+            <div class="title-bottom">
+              <button type="button" class="start" id="btn-start" data-i18n="start"></button>
+              <p class="best-line" id="best-line"></p>
+              <p class="keys" data-i18n="keys"></p>
+            </div>
+          </section>
+
+          <section class="screen" id="screen-over" aria-labelledby="o-title">
+            <div class="card">
+              <h2 id="o-title"></h2>
+              <p class="sub" id="o-sub"></p>
+              <div class="big" id="o-score">0</div>
+              <div class="big-label" data-i18n="score"></div>
+              <p class="best" id="o-best"></p>
+              <dl class="stats" id="o-stats"></dl>
+              <div id="o-board"></div>
+              <button type="button" class="btn" id="btn-again" data-i18n="playAgain"></button>
+            </div>
+          </section>
+
+          <section class="screen" id="screen-finish" aria-labelledby="f-title">
+            <div class="card">
+              <h2 id="f-title" data-i18n="finishTitle"></h2>
+              <p class="sub" data-i18n="finishSub"></p>
+              <div class="big" id="f-score">0</div>
+              <div class="big-label" data-i18n="score"></div>
+              <p class="best" id="f-best"></p>
+              <dl class="stats" id="f-stats"></dl>
+              <div id="f-board"></div>
+              <button type="button" class="btn" id="btn-again2" data-i18n="playAgain"></button>
+            </div>
+          </section>
+
+          <section class="screen" id="screen-pause" aria-labelledby="p-title">
+            <div class="card">
+              <h2 id="p-title" data-i18n="paused"></h2>
+              <button type="button" class="btn" id="btn-resume" data-i18n="resume"></button>
+            </div>
+          </section>
+          <div class="sr" id="sr" aria-live="assertive"></div>
+        </div>
+      </div>
+    </div>
+    <p id="made-by"></p>
+    <script>
+      // Production note, filled by the architect: the agent's working time from the brief until it was stopped.
+      (function () {
+        var q = new URLSearchParams(location.search).get("lang");
+        var ru = q ? q === "ru" : /^(ru|be|kk)\b/i.test(navigator.language || "");
+        document.getElementById("made-by").textContent = ru ? "Первую версию сделал Claude Sonnet 5.5 за 77 мин" : "First version by Claude Sonnet 5.5 in 77 minutes";
+      })();
+    </script>
+  </main>
+  <noscript><p style="position:fixed;inset:44px 0 auto;text-align:center;color:#9aa7b8">This game needs JavaScript.</p></noscript>
+
+  <script src="/assets/names.js"></script>
+  <script src="/assets/scores.js"></script>
+  <script src="core.js"></script>
+  <script src="world.js"></script>
+  <script src="gen.js"></script>
+  <script src="sim.js"></script>
+  <script src="fx.js"></script>
+  <script src="scenery.js"></script>
+  <script src="actors.js"></script>
+  <script src="audio.js"></script>
+  <script src="ui.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

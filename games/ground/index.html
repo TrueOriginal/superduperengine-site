@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07090c">
+<title>Landslide — Super Duper Engine</title>
+<meta name="description" content="A one-throw platformer: the ground collapses behind you, and your only wedge can become a ledge.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2307090c'/%3E%3Cpath d='M9 20 L23 12 L19 22 Z' fill='%23ff7a45'/%3E%3Cpath d='M8 23 H24' stroke='%23c8ff4d' stroke-width='3'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="game" id="game" data-state="title">
+  <div class="stage" id="stage">
+    <canvas id="game-canvas" role="img" aria-label="Landslide"></canvas>
+
+    <a class="chrome-link" id="back-link" href="/en/">← <span data-i18n="back">Super Duper Engine</span></a>
+
+    <div class="hud" id="hud">
+      <div class="hearts" id="hearts" aria-hidden="true">
+        <span class="heart"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 21C6.5 16.5 2 13.2 2 8.7 2 5.6 4.3 3.5 7 3.5c2 0 3.7 1.1 5 2.9 1.3-1.8 3-2.9 5-2.9 2.7 0 5 2.1 5 5.2 0 4.5-4.5 7.8-10 12.3z"/></svg></span>
+        <span class="heart"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 21C6.5 16.5 2 13.2 2 8.7 2 5.6 4.3 3.5 7 3.5c2 0 3.7 1.1 5 2.9 1.3-1.8 3-2.9 5-2.9 2.7 0 5 2.1 5 5.2 0 4.5-4.5 7.8-10 12.3z"/></svg></span>
+        <span class="heart"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 21C6.5 16.5 2 13.2 2 8.7 2 5.6 4.3 3.5 7 3.5c2 0 3.7 1.1 5 2.9 1.3-1.8 3-2.9 5-2.9 2.7 0 5 2.1 5 5.2 0 4.5-4.5 7.8-10 12.3z"/></svg></span>
+      </div>
+      <div class="stats" aria-hidden="true">
+        <span class="pill"><b id="hud-distance">0</b>&nbsp;m</span>
+        <span class="pill"><svg class="crystal-ico" viewBox="0 0 16 16" width="12" height="12"><path d="M8 1 L13.5 8 L8 15 L2.5 8 Z"/></svg><b id="hud-crystals">0</b></span>
+        <span class="pill"><b id="hud-time">0:00</b></span>
+      </div>
+      <div class="hud-tools">
+        <span class="wedge-chip" id="wedge-chip" aria-hidden="true">
+          <svg viewBox="0 0 20 20" width="15" height="15"><path d="M3 15 L16 6 L12 16 Z"/></svg>
+          <span data-i18n="wedge">Wedge</span>
+        </span>
+        <button class="icon-btn" id="mute-btn" type="button" data-i18n-aria="mute">
+          <svg class="ico-on" viewBox="0 0 24 24" width="18" height="18"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.6 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <svg class="ico-off" viewBox="0 0 24 24" width="18" height="18"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16.5 9.5l5 5m0-5l-5 5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+        </button>
+        <button class="icon-btn" id="pause-btn" type="button" data-i18n-aria="pauseBtn">
+          <svg viewBox="0 0 24 24" width="18" height="18"><rect x="6.5" y="5" width="4" height="14" rx="1.2" fill="currentColor"/><rect x="13.5" y="5" width="4" height="14" rx="1.2" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="biome-banner" id="biome-banner"></div>
+    <div class="toast" id="toast"></div>
+    <div class="rotate-hint" data-i18n="rotate"></div>
+
+    <div class="touch-controls" id="touch-controls" aria-hidden="true">
+      <div class="touch-left">
+        <button class="touch-btn" type="button" data-act="left" data-i18n-aria="left">←</button>
+        <button class="touch-btn" type="button" data-act="right" data-i18n-aria="right">→</button>
+      </div>
+      <div class="touch-right">
+        <button class="touch-btn touch-wedge" type="button" data-act="wedge" data-i18n-aria="wedge">
+          <svg viewBox="0 0 20 20" width="20" height="20"><path d="M3 15 L16 6 L12 16 Z" fill="currentColor"/></svg>
+        </button>
+        <button class="touch-btn touch-jump" type="button" data-act="jump" data-i18n-aria="jump">↑</button>
+      </div>
+    </div>
+
+    <section class="overlay title-screen" id="title-screen" aria-labelledby="title-heading">
+      <div class="overlay-inner">
+        <p class="eyebrow">Super Duper Engine</p>
+        <h1 id="title-heading" class="title" data-i18n="title">Landslide</h1>
+        <p class="tagline" data-i18n="tagline"></p>
+        <p class="start-prompt" id="start-prompt" data-i18n="start"></p>
+        <p class="title-best" id="title-best"></p>
+        <p class="title-controls" id="title-controls"></p>
+      </div>
+    </section>
+
+    <section class="overlay pause-screen" id="pause-screen" hidden aria-labelledby="pause-heading">
+      <div class="overlay-inner">
+        <h2 id="pause-heading" data-i18n="paused">Paused</h2>
+        <div class="overlay-actions">
+          <button class="btn primary" id="resume-btn" type="button" data-i18n="resume">Resume</button>
+          <button class="btn ghost" id="pause-mute-btn" type="button">
+            <span id="pause-mute-state">Mute sound</span>
+          </button>
+        </div>
+        <p class="title-controls" id="pause-controls"></p>
+      </div>
+    </section>
+
+    <section class="overlay result-screen" id="over-screen" hidden aria-labelledby="over-heading">
+      <div class="overlay-inner">
+        <p class="eyebrow result-eyebrow" id="over-eyebrow"></p>
+        <h2 id="over-heading">The collapse caught you</h2>
+        <p class="sub" data-i18n="overSub"></p>
+        <dl class="results" data-res-list>
+          <div><dt data-i18n="statsDistance">Distance</dt><dd data-res="distance">0</dd></div>
+          <div><dt data-i18n="statsCrystals">Crystals</dt><dd data-res="crystals">0</dd></div>
+          <div><dt data-i18n="statsTime">Time</dt><dd data-res="time">0:00</dd></div>
+        </dl>
+        <p class="score-line"><span data-i18n="score">Score</span> <b data-res="score">0</b></p>
+        <p class="best-line" data-res="best"></p>
+        <div class="board" id="over-board"></div>
+        <button class="btn primary" id="again-btn" type="button" data-i18n="playAgain">Play again</button>
+      </div>
+    </section>
+
+    <section class="overlay result-screen" id="finish-screen" hidden aria-labelledby="finish-heading">
+      <div class="overlay-inner">
+        <p class="eyebrow result-eyebrow" id="finish-eyebrow"></p>
+        <h2 id="finish-heading" data-i18n="finishTitle">You reached the valley</h2>
+        <p class="sub" data-i18n="finishSub"></p>
+        <dl class="results" data-res-list>
+          <div><dt data-i18n="statsDistance">Distance</dt><dd data-res="distance">0</dd></div>
+          <div><dt data-i18n="statsCrystals">Crystals</dt><dd data-res="crystals">0</dd></div>
+          <div><dt data-i18n="statsHearts">Hearts left</dt><dd data-res="hearts">3</dd></div>
+          <div><dt data-i18n="statsTime">Time</dt><dd data-res="time">0:00</dd></div>
+        </dl>
+        <p class="score-line"><span data-i18n="score">Score</span> <b data-res="score">0</b></p>
+        <p class="best-line" data-res="best"></p>
+        <div class="board" id="finish-board"></div>
+        <button class="btn primary" id="finish-again-btn" type="button" data-i18n="playAgain">Play again</button>
+      </div>
+    </section>
+  </div>
+  <p id="made-by"></p>
+  <script>
+    // Production note, filled by the architect: the agent's working time from the brief to this build.
+    (function () {
+      var q = new URLSearchParams(location.search).get("lang");
+      var ru = q ? q === "ru" : /^(ru|be|kk)/i.test(navigator.language || "");
+      document.getElementById("made-by").textContent = ru ? "Первую версию сделал DeepSeek V4.1 Flash за 46 мин" : "First version by DeepSeek V4.1 Flash in 46 minutes";
+    })();
+  </script>
+</div>
+<script src="/assets/names.js"></script>
+<script src="/assets/scores.js"></script>
+<script type="module" src="js/game.js"></script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Over the Edge · Super Duper Engine</title>
+  <meta name="description" content="A small first-person shooter: knock the bots off a floating island before they knock you off.">
+  <meta name="theme-color" content="#07090c">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <div class="hud" id="hud" hidden>
+    <div class="hud-top">
+      <div class="pill"><span data-t="wave"></span> <b id="hud-wave">1/8</b> <span class="dim" id="hud-left"></span></div>
+      <div class="pill score"><b id="hud-score">0</b> <span class="combo" id="hud-combo"></span></div>
+    </div>
+    <div class="crosshair" aria-hidden="true"></div>
+    <div class="hud-bottom">
+      <div class="lives" id="hud-lives" aria-label="lives"></div>
+      <div class="cools">
+        <div class="cool" id="cool-dash"><i></i><kbd data-t="keyDash"></kbd><span data-t="dash"></span></div>
+        <div class="cool" id="cool-shock"><i></i><kbd data-t="keyShock"></kbd><span data-t="shock"></span></div>
+      </div>
+    </div>
+    <div class="banner" id="banner" aria-live="polite"></div>
+    <div class="hint" id="hint" aria-live="polite"></div>
+    <div class="hurt" id="hurt"></div>
+  </div>
+
+  <div class="touch" id="touch" hidden>
+    <div class="stick" id="stick"><i></i></div>
+    <button class="tbtn fire" id="t-fire" type="button" data-t="fire"></button>
+    <button class="tbtn jump" id="t-jump" type="button" data-t="jump"></button>
+    <button class="tbtn dash" id="t-dash" type="button" data-t="dash"></button>
+    <button class="tbtn shock" id="t-shock" type="button" data-t="shock"></button>
+  </div>
+
+  <div class="screen" id="screen-title">
+    <div class="card">
+      <h1 data-t="title"></h1>
+      <p class="tag" data-t="tagline"></p>
+      <p class="how" id="how"></p>
+      <button class="play" id="play" type="button" data-t="play"></button>
+      <p class="best" id="best"></p>
+      <p class="made" id="made-by"></p>
+    </div>
+  </div>
+  <div class="screen" id="screen-pause" hidden>
+    <div class="card">
+      <h2 data-t="paused"></h2>
+      <button class="play" id="resume" type="button" data-t="resume"></button>
+      <button class="ghost" id="restart" type="button" data-t="restart"></button>
+      <button class="ghost" id="quit" type="button" data-t="quit"></button>
+    </div>
+  </div>
+  <div class="screen" id="screen-end" hidden>
+    <div class="card">
+      <h2 id="end-title"></h2>
+      <p class="tag" id="end-text"></p>
+      <p class="best" id="end-best"></p>
+      <div id="board"></div>
+      <button class="play" id="again" type="button" data-t="again"></button>
+    </div>
+  </div>
+  <div class="screen" id="screen-nogl" hidden>
+    <div class="card"><h2 data-t="title"></h2><p class="tag" data-t="nogl"></p></div>
+  </div>
+
+  <a class="back" id="back" href="/en/">&larr; Super Duper Engine</a>
+  <button class="mute" id="mute" type="button"></button>
+
+  <script src="/assets/names.js"></script>
+  <script src="/assets/scores.js"></script>
+  <script src="world.js"></script>
+  <script src="render.js"></script>
+  <script src="audio.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

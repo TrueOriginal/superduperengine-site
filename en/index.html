@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SuperDuper Engine. The game engine agents build games with</title>
+<meta name="description" content="A game engine where AI agents build levels and check them on their own, while a person plays and decides what stays. Demos, games and a devlog.">
+<link rel="canonical" href="https://superduperengine.top/en/">
+<link rel="alternate" hreflang="ru" href="https://superduperengine.top/ru/">
+<link rel="alternate" hreflang="en" href="https://superduperengine.top/en/">
+<link rel="alternate" hreflang="x-default" href="https://superduperengine.top/en/">
+<link rel="alternate" type="application/rss+xml" title="SuperDuper Engine devlog" href="feed.xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SuperDuper Engine. The game engine agents build games with">
+<meta property="og:description" content="A game engine where AI agents build levels and check them on their own, while a person plays and decides what stays. Demos, games and a devlog.">
+<meta property="og:url" content="https://superduperengine.top/en/">
+<meta property="og:image" content="https://superduperengine.top/assets/brand/og-en.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0B0D1E" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F3F4F9" media="(prefers-color-scheme: light)">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/brand/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../assets/brand/apple-touch-icon.png">
+<script>
+  // The theme chosen by hand wins over the system's; set before the first paint.
+  (function () { try { var t = localStorage.getItem("sde.theme"); if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t); } catch (e) {} })();
+</script>
+<link rel="preload" href="../assets/fonts/geologica-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../assets/sde.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <div class="bar-in">
+    <a class="brand" href="./" aria-label="SuperDuper Engine"><svg class="brand-mark" viewBox="0 0 256 256" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect width="256" height="256" rx="60" fill="#2E46E6"/><path d="M48 162V122C48 88 82 66 128 66C174 66 208 88 208 122V162Z" fill="#FF8CC8"/><path d="M70 106C72 92 84 81 99 77" fill="none" stroke="#F0EEE9" stroke-width="8" stroke-linecap="round" opacity=".55"/><ellipse cx="104" cy="126" rx="22" ry="26" fill="#F0EEE9"/><g class="pupil" data-cx="104" data-cy="126" transform="translate(0 5)"><circle cx="104" cy="126" r="11" fill="#0B0D1E"/><circle cx="101" cy="122" r="3.5" fill="#F0EEE9"/></g><ellipse cx="152" cy="126" rx="22" ry="26" fill="#F0EEE9"/><g class="pupil" data-cx="152" data-cy="126" transform="translate(0 5)"><circle cx="152" cy="126" r="11" fill="#0B0D1E"/><circle cx="149" cy="122" r="3.5" fill="#F0EEE9"/></g><rect x="28" y="158" width="200" height="28" rx="14" fill="#F0EEE9"/></svg><span class="wordmark"><b>SuperDuper</b> Engine</span></a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#demo">Demo</a><a href="#games">Games</a><a href="devlog/">Devlog</a><a href="#how">How it works</a><a href="#plan">Roadmap</a>
+    </nav>
+    <div class="bar-tools">
+      <button class="theme-btn" type="button" data-theme-toggle data-label-system="Theme follows the system" data-label-dark="Dark theme" data-label-light="Light theme" aria-label="Theme follows the system" title="Theme follows the system">
+        <span class="ti ti-system"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor"/></svg></span><span class="ti ti-dark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z" fill="currentColor"/></svg></span><span class="ti ti-light"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+      </button>
+      <a class="lang" href="../ru/" data-lang="ru" hreflang="ru" lang="ru">Русский</a>
+    </div>
+  </div>
+</header>
+<main id="main">
+<section class="hero" id="demo">
+  <div class="hero-copy">
+    <h1>Agents build the game overnight. You play it in the morning. <span class="h1-brand">SuperDuper Engine!</span></h1>
+    <div class="side">
+      <p class="lead">The engine is built so an agent can work with it directly. No, you don't need MCP. The world is stored as text, which makes it easy to read and test and saves tokens.</p>
+      <p class="lead">The agent builds a level and checks that it works, and you play and decide what stays.</p>
+      <div class="actions"><a class="btn btn-play" href="#games">Play</a><a class="btn btn-quiet" href="devlog/">Read the devlog</a></div>
+      <p class="build">Updated 29 October 2026, engine build 844.</p>
+    </div>
+  </div>
+  <figure class="demo" data-demo data-lang="en" data-tick="tick" data-pause="Pause" data-resume="Resume" data-start="Play the recording">
+    <div class="peek-wrap"><svg class="peek" viewBox="0 40 256 126" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M48 162V122C48 88 82 66 128 66C174 66 208 88 208 122V162Z" fill="#FF8CC8"/><path d="M70 106C72 92 84 81 99 77" fill="none" stroke="#F0EEE9" stroke-width="8" stroke-linecap="round" opacity=".55"/><ellipse cx="104" cy="126" rx="22" ry="26" fill="#F0EEE9"/><g class="pupil" data-cx="104" data-cy="126" transform="translate(0 5)"><circle cx="104" cy="126" r="11" fill="#0B0D1E"/><circle cx="101" cy="122" r="3.5" fill="#F0EEE9"/></g><ellipse cx="152" cy="126" rx="22" ry="26" fill="#F0EEE9"/><g class="pupil" data-cx="152" data-cy="126" transform="translate(0 5)"><circle cx="152" cy="126" r="11" fill="#0B0D1E"/><circle cx="149" cy="122" r="3.5" fill="#F0EEE9"/></g></svg></div>
+    <div class="demo-tabs" role="tablist" aria-label="Demos" data-demo-tabs></div>
+    <div class="demo-window">
+      <div class="demo-top"><span class="demo-title" data-demo-title></span><span class="demo-tick" data-demo-tick></span><button class="demo-pause" type="button" data-demo-pause>Pause</button></div>
+      <div class="demo-stage"><canvas class="demo-canvas" data-demo-canvas role="img" aria-label="Your browser does not show 3D here. The recording is intact: the first test failed, the agent raised the slide, the second test passed."></canvas><p class="demo-nogl" data-demo-nogl hidden>Your browser does not show 3D here. The recording is intact: the first test failed, the agent raised the slide, the second test passed.</p></div>
+      <div class="demo-caption" aria-live="polite"><p class="demo-run" data-demo-run></p><p class="demo-change" data-demo-change></p></div>
+    </div>
+    <figcaption class="demo-note">This is a recording of a real engine run.</figcaption>
+  </figure>
+</section>
+<section class="games" id="games" aria-labelledby="games-h" data-records-api="https://animated-squirrel-692fce.netlify.app/.netlify/functions/scores">
+  <div class="sec-head"><h2 id="games-h">Games agents made</h2><p>Even with simple tools, agents can already build full game prototypes.</p></div>
+  <article class="game game-main">
+      <a class="game-shot" href="../games/edge/?lang=en"><img src="../assets/games/edge.jpg" alt="Over the Edge: a first-person view of bots on a floating island" loading="lazy" width="640" height="360"></a>
+      <div class="game-body">
+        <p class="game-kind">3D shooter</p>
+        <h3>Over the Edge</h3>
+        <p class="game-desc">Knock the bots off a floating island before they knock you off. Eleven waves, about seven minutes.</p>
+        <p class="game-how"><b>How to play.</b> Shots push bots back. Drive them over the edge, chain knockoffs for combo points, sidestep the lunges and use the shockwave when surrounded. A shotgun drops after wave 7.</p><p class="game-how"><b>Controls.</b> WASD move, mouse aim, click shoot, Space jump, Shift dash, right click or E shockwave. On a phone: stick, drag to aim, buttons.</p>
+        <dl class="facts">
+          <div><dt>Made by</dt><dd>Claude Opus 5.5</dd></div>
+          <div><dt>To first playable</dt><dd>58 min</dd></div>
+          <div><dt>Tokens</dt><dd>134k written, 22.5M read</dd></div>
+          <div class="record" data-record="edge" hidden><dt>Record</dt><dd></dd></div>
+        </dl>
+        <a class="btn btn-play" href="../games/edge/?lang=en">Play</a>
+      </div>
+    </article>
+  <div class="game-row"><article class="game">
+      <a class="game-shot" href="../games/ground/?lang=en"><img src="../assets/games/ground.jpg" alt="Landslide: the climber stands on a wedge stuck in a canyon wall" loading="lazy" width="640" height="360"></a>
+      <div class="game-body">
+        <p class="game-kind">Platformer</p>
+        <h3>Landslide</h3>
+        <p class="game-desc">The ground collapses behind you. Run to the safe valley through five lands, about five minutes.</p>
+        
+        <dl class="facts">
+          <div><dt>Made by</dt><dd>DeepSeek V4.1 Flash</dd></div>
+          <div><dt>To first playable</dt><dd>46 min</dd></div>
+          <div><dt>Tokens</dt><dd>309k written, 13.1M read</dd></div>
+          <div class="record" data-record="ground" hidden><dt>Record</dt><dd></dd></div>
+        </dl>
+        <a class="btn btn-play" href="../games/ground/?lang=en">Play</a>
+      </div>
+    </article><article class="game">
+      <a class="game-shot" href="../games/air/?lang=en"><img src="../assets/games/air.jpg" alt="Sky Lantern: a paper lantern flies at night over sea cliffs" loading="lazy" width="640" height="360"></a>
+      <div class="game-body">
+        <p class="game-kind">Flight</p>
+        <h3>Sky Lantern</h3>
+        <p class="game-desc">A paper lantern drifts through one night, from dusk to dawn.</p>
+        
+        <dl class="facts">
+          <div><dt>Made by</dt><dd>Claude Sonnet 5.5</dd></div>
+          <div><dt>To first playable</dt><dd>77 min</dd></div>
+          <div><dt>Tokens</dt><dd>470k written, 48.2M read</dd></div>
+          <div class="record" data-record="air" hidden><dt>Record</dt><dd></dd></div>
+        </dl>
+        <a class="btn btn-play" href="../games/air/?lang=en">Play</a>
+      </div>
+    </article></div>
+</section>
+<section class="how" id="how" aria-labelledby="how-h">
+  <div class="sec-head"><h2 id="how-h">How an agent makes a level</h2></div>
+  <div class="points"><div class="point"><h3>The world is text</h3><p>A level is described in ordinary text files. The agent reads and edits them like code, and the engine points out mistakes right away.</p></div><div class="point"><h3>A check in a second</h3><p>The agent runs the game without a window and learns in a fraction of a second what happened: where the ball rolled, what fell, whether the character made it.</p></div><div class="point"><h3>Full determinism</h3><p>The same input gives the same state and the same events in the same order wherever the game runs. If a test passed for the agent, players get the same result.</p></div><div class="point"><h3>The Report button</h3><p>If a jump falls short or a crate gets stuck, press Report in the editor and add a few words. The agent gets that moment, runs the game from it and works out what to fix.</p></div></div>
+</section>
+<section class="spec" id="engine" aria-labelledby="spec-h">
+  <div class="sec-head"><h2 id="spec-h">What the engine does today</h2></div>
+  <dl class="spec-list"><div><dt>Editor</dt><dd>Play, pause and step through the game. An agent's edits appear in the open editor right away.</dd></div><div><dt>Graphics</dt><dd>Up to 256 lights in a frame, soft shadows, water, grass in the wind, and marks and signs on surfaces.</dd></div><div><dt>Scripts</dt><dd>Game logic is written in TypeScript. A script can change while the game is running.</dd></div><div><dt>Animation</dt><dd>Models and characters from Blender and other tools, with animation and smooth blends between moves.</dd></div><div><dt>Game UI</dt><dd>Menus and on-screen hints are laid out like an ordinary web page.</dd></div><div><dt>Stories</dt><dd>Dialogues with choices, and cutscenes with camera moves and animation.</dd></div><div><dt>Audio</dt><dd>Sounds on objects and in zones: louder up close, quieter far away.</dd></div><div><dt>Navigation</dt><dd>When a level loads, the engine works out where characters can walk.</dd></div><div><dt>Physics</dt><dd>Things fall, roll and collide. A character runs on a keyboard or a gamepad, and the jump forgives a slightly late press.</dd></div></dl>
+</section>
+<section class="plan" id="plan" aria-labelledby="plan-h">
+  <div class="sec-head"><h2 id="plan-h">The road to the first game on the engine</h2></div>
+  <div class="progress">
+    <div class="progress-main">
+      <div class="progress-bar" role="img" aria-label="78%"><span style="width:78%"></span></div>
+      <div class="phase" role="group" aria-label="Phase 1">
+        <div class="phase-track" aria-hidden="true"></div>
+        <span class="phase-tick phase-start" tabindex="0" data-date="2026-10-26" aria-describedby="phase-tip-start"><span class="phase-dot" aria-hidden="true"></span><time datetime="2026-10-26">26 October 2026</time><span class="phase-tip" role="tooltip" id="phase-tip-start">Phase 1 started</span></span><span class="phase-tick phase-end" tabindex="0" data-date="2026-10-29" aria-describedby="phase-tip-end"><span class="phase-dot" aria-hidden="true"></span><time datetime="2026-10-29">29 October 2026</time><span class="phase-tip" role="tooltip" id="phase-tip-end">Phase 1 done: audited and stable</span></span>
+      </div>
+    </div>
+    <p>145 of 185 plan tasks done</p>
+  </div>
+</section>
+<section class="contact" id="contact" aria-labelledby="contact-h">
+  <div class="contact-main">
+    <h2 id="contact-h">Early access</h2>
+    <p>There is no public build yet. If you make games with agents, write to us about your game and the agents you use. We open access one team at a time and help with the first project.</p>
+    <p class="mail"><a href="mailto:info@superduperengine.top">info@superduperengine.top</a><button class="btn btn-quiet btn-small" type="button" data-copy="info@superduperengine.top" data-copied="Copied">Copy the address</button></p>
+    <p class="follow">New devlog entries come by RSS: <a href="feed.xml">feed.xml</a></p>
+  </div>
+  <div class="faq"><h2>Questions</h2><dl><div><dt>Which agents does SDE work with?</dt><dd>Any agent that can run commands in a terminal: Claude Code, Codex, Cursor and others. The agent drives the engine with plain commands.</dd></div><div><dt>Is it built on Unity or Godot?</dt><dd>No, it is an engine of its own.</dd></div><div><dt>What is the engine written in?</dt><dd>C++: physics, graphics, animation, audio and the editor. The agent writes game logic in TypeScript: agents write it best, and many mistakes show up before the game starts. Scripts run in a small built-in interpreter, as in many big engines. Physics and rendering never go through scripts: a script gets events and sends commands.</dd></div><div><dt>Where will games run?</dt><dd>On desktop and in the browser. Phones come later. No consoles yet.</dd></div></dl></div>
+</section>
+<section class="latest" id="news" aria-labelledby="news-h">
+  <div class="sec-head"><h2 id="news-h">Devlog</h2><p class="sec-links"><a href="devlog/">Full devlog</a><a href="feed.xml">RSS</a></p></div>
+  <article class="latest-day"><div><h3><a href="devlog/#2026-10-29-phase-1-is-closed-the-audit-and-the-first-game-o">Phase 1 is closed: the audit and the first game on SDE</a></h3><time datetime="2026-10-29">29 October</time></div><div class="latest-text"><p>The Phase 1 cut went through an audit. Five checks by agents and an independent review found 25 bugs, three of them critical: a script memory leak stopped the world after 15 seconds of heavy fire, headshots did not count on bots spawned from templates, and animation events went silent after a rewind. All are fixed, and the engine is tagged stable.</p><p>A long run of 60,000 ticks matches bit for bit between the native build and the browser.</p><p>Landslide now runs on SDE. Agents ported it one to one, with tests that check every number against the original. Next the game grows: a collapse into debris, seven biomes, a ghost of your best run. Over the Edge and Sky Lantern move to SDE next.</p><p>By the evening much of it is in the game. The collapse breaks the world apart: platforms crumble into tumbling debris, and cracks run ahead of the edge. Seven biomes are in: meadow, hills, canyon, glacier, cave, volcano and valley, each with its own light and backdrop. Surfaces matter now: ice never holds the wedge, wood holds it on any face, crystal bounces it back. Landings shake the camera, a hard hit freezes the action for an instant, and a jump after a fall starts a new run at once.</p></div></article>
+</section>
+</main>
+<footer class="foot">
+  <div class="foot-in">
+    <p>© 2026 SuperDuper Engine. No trackers, no ads.</p>
+    <p><a href="mailto:info@superduperengine.top">info@superduperengine.top</a> <a href="feed.xml">RSS</a></p>
+  </div>
+</footer>
+<script src="../assets/demo-data.js" defer></script>
+<script src="../assets/demos.js" defer></script>
+<script src="../assets/demo-player.js" defer></script>
+<script src="../assets/sde.js" defer></script>
+</body>
+</html>

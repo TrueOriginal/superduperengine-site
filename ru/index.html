@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SuperDuper Engine. Игровой движок, на котором игры собирают агенты</title>
+<meta name="description" content="Игровой движок, с которым ИИ-агенты сами собирают уровни и проверяют их, а человек играет и решает, что оставить. Демо, игры и дневник разработки.">
+<link rel="canonical" href="https://superduperengine.top/ru/">
+<link rel="alternate" hreflang="ru" href="https://superduperengine.top/ru/">
+<link rel="alternate" hreflang="en" href="https://superduperengine.top/en/">
+<link rel="alternate" hreflang="x-default" href="https://superduperengine.top/en/">
+<link rel="alternate" type="application/rss+xml" title="SuperDuper Engine: дневник разработки" href="feed.xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SuperDuper Engine. Игровой движок, на котором игры собирают агенты">
+<meta property="og:description" content="Игровой движок, с которым ИИ-агенты сами собирают уровни и проверяют их, а человек играет и решает, что оставить. Демо, игры и дневник разработки.">
+<meta property="og:url" content="https://superduperengine.top/ru/">
+<meta property="og:image" content="https://superduperengine.top/assets/brand/og-ru.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0B0D1E" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F3F4F9" media="(prefers-color-scheme: light)">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/brand/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../assets/brand/apple-touch-icon.png">
+<script>
+  // The theme chosen by hand wins over the system's; set before the first paint.
+  (function () { try { var t = localStorage.getItem("sde.theme"); if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t); } catch (e) {} })();
+</script>
+<link rel="preload" href="../assets/fonts/geologica-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../assets/sde.css">
+</head>
+<body>
+<a class="skip" href="#main">К содержимому</a>
+<header class="bar">
+  <div class="bar-in">
+    <a class="brand" href="./" aria-label="SuperDuper Engine"><svg class="brand-mark" viewBox="0 0 256 256" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect width="256" height="256" rx="60" fill="#2E46E6"/><path d="M48 162V122C48 88 82 66 128 66C174 66 208 88 208 122V162Z" fill="#FF8CC8"/><path d="M70 106C72 92 84 81 99 77" fill="none" stroke="#F0EEE9" stroke-width="8" stroke-linecap="round" opacity=".55"/><ellipse cx="104" cy="126" rx="22" ry="26" fill="#F0EEE9"/><g class="pupil" data-cx="104" data-cy="126" transform="translate(0 5)"><circle cx="104" cy="126" r="11" fill="#0B0D1E"/><circle cx="101" cy="122" r="3.5" fill="#F0EEE9"/></g><ellipse cx="152" cy="126" rx="22" ry="26" fill="#F0EEE9"/><g class="pupil" data-cx="152" data-cy="126" transform="translate(0 5)"><circle cx="152" cy="126" r="11" fill="#0B0D1E"/><circle cx="149" cy="122" r="3.5" fill="#F0EEE9"/></g><rect x="28" y="158" width="200" height="28" rx="14" fill="#F0EEE9"/></svg><span class="wordmark"><b>SuperDuper</b> Engine</span></a>
+    <nav class="nav" aria-label="Разделы">
+      <a href="#demo">Демо</a><a href="#games">Игры</a><a href="devlog/">Дневник</a><a href="#how">Как устроено</a><a href="#plan">Планы</a>
+    </nav>
+    <div class="bar-tools">
+      <button class="theme-btn" type="button" data-theme-toggle data-label-system="Тема как в системе" data-label-dark="Тёмная тема" data-label-light="Светлая тема" aria-label="Тема как в системе" title="Тема как в системе">
+        <span class="ti ti-system"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor"/></svg></span><span class="ti ti-dark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z" fill="currentColor"/></svg></span><span class="ti ti-light"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+      </button>
+      <a class="lang" href="../en/" data-lang="en" hreflang="en" lang="en">English</a>
+    </div>
+  </div>
+</header>
+<main id="main">
+<section class="hero" id="demo">
+  <div class="hero-copy">
+    <h1>Ночью агенты собирают игру. Утром вы в неё играете. <span class="h1-brand">SuperDuper Engine!</span></h1>
+    <div class="side">
+      <p class="lead">Движок устроен так, чтобы агент мог работать с ним напрямую. Нет, MCP не нужен. Мир хранится в текстовом формате, поэтому агенту проще его читать и тестировать, а токенов уходит меньше.</p>
+      <p class="lead">Агент собирает уровень и проверяет, что всё работает, а вы играете и решаете, что оставить.</p>
+      <div class="actions"><a class="btn btn-play" href="#games">Играть</a><a class="btn btn-quiet" href="devlog/">Дневник разработки</a></div>
+      <p class="build">Сайт обновлён 29 октября 2026, сборка движка 844.</p>
+    </div>
+  </div>
+  <figure class="demo" data-demo data-lang="ru" data-tick="тик" data-pause="Пауза" data-resume="Дальше" data-start="Проиграть запись">
+    <div class="peek-wrap"><svg class="peek" viewBox="0 40 256 126" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M48 162V122C48 88 82 66 128 66C174 66 208 88 208 122V162Z" fill="#FF8CC8"/><path d="M70 106C72 92 84 81 99 77" fill="none" stroke="#F0EEE9" stroke-width="8" stroke-linecap="round" opacity=".55"/><ellipse cx="104" cy="126" rx="22" ry="26" fill="#F0EEE9"/><g class="pupil" data-cx="104" data-cy="126" transform="translate(0 5)"><circle cx="104" cy="126" r="11" fill="#0B0D1E"/><circle cx="101" cy="122" r="3.5" fill="#F0EEE9"/></g><ellipse cx="152" cy="126" rx="22" ry="26" fill="#F0EEE9"/><g class="pupil" data-cx="152" data-cy="126" transform="translate(0 5)"><circle cx="152" cy="126" r="11" fill="#0B0D1E"/><circle cx="149" cy="122" r="3.5" fill="#F0EEE9"/></g></svg></div>
+    <div class="demo-tabs" role="tablist" aria-label="Демо" data-demo-tabs></div>
+    <div class="demo-window">
+      <div class="demo-top"><span class="demo-title" data-demo-title></span><span class="demo-tick" data-demo-tick></span><button class="demo-pause" type="button" data-demo-pause>Пауза</button></div>
+      <div class="demo-stage"><canvas class="demo-canvas" data-demo-canvas role="img" aria-label="Браузер не показывает здесь 3D. Запись цела: первый тест не прошёл, агент поднял горку, второй тест прошёл."></canvas><p class="demo-nogl" data-demo-nogl hidden>Браузер не показывает здесь 3D. Запись цела: первый тест не прошёл, агент поднял горку, второй тест прошёл.</p></div>
+      <div class="demo-caption" aria-live="polite"><p class="demo-run" data-demo-run></p><p class="demo-change" data-demo-change></p></div>
+    </div>
+    <figcaption class="demo-note">Это запись настоящего прогона движка.</figcaption>
+  </figure>
+</section>
+<section class="games" id="games" aria-labelledby="games-h" data-records-api="https://animated-squirrel-692fce.netlify.app/.netlify/functions/scores">
+  <div class="sec-head"><h2 id="games-h">Игры, которые собрали агенты</h2><p>Уже сейчас простыми инструментами агенты могут собирать полноценные игровые прототипы.</p></div>
+  <article class="game game-main">
+      <a class="game-shot" href="../games/edge/?lang=ru"><img src="../assets/games/edge.jpg" alt="«За край»: вид от первого лица, боты на летающем острове" loading="lazy" width="640" height="360"></a>
+      <div class="game-body">
+        <p class="game-kind">3D-шутер</p>
+        <h3>За край</h3>
+        <p class="game-desc">Сбросьте ботов с летающего острова, пока они не сбросили вас. Одиннадцать волн, около семи минут.</p>
+        <p class="game-how"><b>Как играть.</b> Выстрелы отталкивают ботов. Сталкивайте их за край, сбрасывайте подряд ради комбо, уходите от рывков, а окружённым помогает волна. После седьмой волны выпадает дробовик.</p><p class="game-how"><b>Управление.</b> WASD ходить, мышь целиться, клик стрелять, пробел прыжок, Shift рывок, правая кнопка или E волна. На телефоне стик, перетаскивание и кнопки.</p>
+        <dl class="facts">
+          <div><dt>Собрал</dt><dd>Claude Opus 5.5</dd></div>
+          <div><dt>До первой версии</dt><dd>58 мин</dd></div>
+          <div><dt>Токены</dt><dd>написано 134 тыс., прочитано 22,5 млн</dd></div>
+          <div class="record" data-record="edge" hidden><dt>Рекорд</dt><dd></dd></div>
+        </dl>
+        <a class="btn btn-play" href="../games/edge/?lang=ru">Играть</a>
+      </div>
+    </article>
+  <div class="game-row"><article class="game">
+      <a class="game-shot" href="../games/ground/?lang=ru"><img src="../assets/games/ground.jpg" alt="«Обвал»: скалолаз стоит на клине, вбитом в стену каньона" loading="lazy" width="640" height="360"></a>
+      <div class="game-body">
+        <p class="game-kind">Платформер</p>
+        <h3>Обвал</h3>
+        <p class="game-desc">Земля рушится за спиной. Бегите в безопасную долину через пять земель, около пяти минут.</p>
+        
+        <dl class="facts">
+          <div><dt>Собрал</dt><dd>DeepSeek V4.1 Flash</dd></div>
+          <div><dt>До первой версии</dt><dd>46 мин</dd></div>
+          <div><dt>Токены</dt><dd>написано 309 тыс., прочитано 13,1 млн</dd></div>
+          <div class="record" data-record="ground" hidden><dt>Рекорд</dt><dd></dd></div>
+        </dl>
+        <a class="btn btn-play" href="../games/ground/?lang=ru">Играть</a>
+      </div>
+    </article><article class="game">
+      <a class="game-shot" href="../games/air/?lang=ru"><img src="../assets/games/air.jpg" alt="«Небесный фонарик»: бумажный фонарик летит ночью над морскими скалами" loading="lazy" width="640" height="360"></a>
+      <div class="game-body">
+        <p class="game-kind">Полёт</p>
+        <h3>Небесный фонарик</h3>
+        <p class="game-desc">Бумажный фонарик летит сквозь одну ночь, от сумерек до рассвета.</p>
+        
+        <dl class="facts">
+          <div><dt>Собрал</dt><dd>Claude Sonnet 5.5</dd></div>
+          <div><dt>До первой версии</dt><dd>77 мин</dd></div>
+          <div><dt>Токены</dt><dd>написано 470 тыс., прочитано 48,2 млн</dd></div>
+          <div class="record" data-record="air" hidden><dt>Рекорд</dt><dd></dd></div>
+        </dl>
+        <a class="btn btn-play" href="../games/air/?lang=ru">Играть</a>
+      </div>
+    </article></div>
+</section>
+<section class="how" id="how" aria-labelledby="how-h">
+  <div class="sec-head"><h2 id="how-h">Как агент делает уровень</h2></div>
+  <div class="points"><div class="point"><h3>Мир хранится текстом</h3><p>Уровень описан обычными текстовыми файлами. Агент читает и правит их как код, а движок сразу говорит, где ошибка.</p></div><div class="point"><h3>Проверка за секунду</h3><p>Агент запускает игру без окна и за доли секунды узнаёт, что произошло: куда укатился шар, что упало, дошёл ли персонаж.</p></div><div class="point"><h3>Полный детерминизм</h3><p>Одинаковый ввод даёт одинаковое состояние и те же события в том же порядке, где бы ни шла игра. Если тест прошёл у агента, у игроков всё будет так же.</p></div><div class="point"><h3>Кнопка «Отчёт»</h3><p>Если прыжок не долетает или ящик застрял, нажмите в редакторе «Отчёт» и напишите пару слов. Агент получит этот момент, запустит игру с него и разберётся, что чинить.</p></div></div>
+</section>
+<section class="spec" id="engine" aria-labelledby="spec-h">
+  <div class="sec-head"><h2 id="spec-h">Что движок умеет сейчас</h2></div>
+  <dl class="spec-list"><div><dt>Редактор</dt><dd>Можно играть, ставить на паузу и проходить игру по шагам. Правки агента сразу появляются в открытом редакторе.</dd></div><div><dt>Графика</dt><dd>До 256 ламп в кадре, мягкие тени, вода, трава на ветру, следы и надписи на поверхностях.</dd></div><div><dt>Скрипты</dt><dd>Логику игры пишут на TypeScript. Скрипт можно поменять прямо во время игры.</dd></div><div><dt>Анимация</dt><dd>Модели и персонажи из Blender и других программ, с анимацией и плавными переходами между движениями.</dd></div><div><dt>Интерфейс игры</dt><dd>Меню и подсказки на экране верстаются как обычная веб-страница.</dd></div><div><dt>Истории</dt><dd>Диалоги с выбором ответов и катсцены с камерой и анимацией.</dd></div><div><dt>Звук</dt><dd>Звуки у предметов и в зонах: рядом громче, вдали тише.</dd></div><div><dt>Навигация</dt><dd>При загрузке уровня движок сам размечает, где по нему можно пройти.</dd></div><div><dt>Физика</dt><dd>Предметы падают, катятся и сталкиваются. Персонаж бегает с клавиатуры или геймпада, а прыжок прощает небольшое опоздание.</dd></div></dl>
+</section>
+<section class="plan" id="plan" aria-labelledby="plan-h">
+  <div class="sec-head"><h2 id="plan-h">Дорога к первой игре на движке</h2></div>
+  <div class="progress">
+    <div class="progress-main">
+      <div class="progress-bar" role="img" aria-label="78%"><span style="width:78%"></span></div>
+      <div class="phase" role="group" aria-label="Фаза 1">
+        <div class="phase-track" aria-hidden="true"></div>
+        <span class="phase-tick phase-start" tabindex="0" data-date="2026-10-26" aria-describedby="phase-tip-start"><span class="phase-dot" aria-hidden="true"></span><time datetime="2026-10-26">26 октября 2026</time><span class="phase-tip" role="tooltip" id="phase-tip-start">Фаза 1 началась</span></span><span class="phase-tick phase-end" tabindex="0" data-date="2026-10-29" aria-describedby="phase-tip-end"><span class="phase-dot" aria-hidden="true"></span><time datetime="2026-10-29">29 октября 2026</time><span class="phase-tip" role="tooltip" id="phase-tip-end">Фаза 1 готова: проверена и стабильна</span></span>
+      </div>
+    </div>
+    <p>145 из 185 задач плана готово</p>
+  </div>
+</section>
+<section class="contact" id="contact" aria-labelledby="contact-h">
+  <div class="contact-main">
+    <h2 id="contact-h">Ранний доступ</h2>
+    <p>Публичной сборки пока нет. Если вы делаете игры с агентами, напишите, что за игра и с какими агентами вы работаете. Открываем доступ по одной команде и помогаем с первым проектом.</p>
+    <p class="mail"><a href="mailto:info@superduperengine.top">info@superduperengine.top</a><button class="btn btn-quiet btn-small" type="button" data-copy="info@superduperengine.top" data-copied="Скопировано">Скопировать адрес</button></p>
+    <p class="follow">Новые записи дневника приходят по RSS: <a href="feed.xml">feed.xml</a></p>
+  </div>
+  <div class="faq"><h2>Вопросы</h2><dl><div><dt>С какими агентами работает SDE?</dt><dd>С любым агентом, который умеет запускать команды в терминале: Claude Code, Codex, Cursor и другими. Агент работает с движком обычными командами.</dd></div><div><dt>Это надстройка над Unity или Godot?</dt><dd>Нет, это отдельный движок со своим ядром.</dd></div><div><dt>На чём написан движок?</dt><dd>На C++: физика, графика, анимация, звук и редактор. Логику игры агент пишет на TypeScript: на нём агенты пишут лучше всего, и многие ошибки видны ещё до запуска. Скрипты выполняет небольшой встроенный интерпретатор, как во многих крупных движках. Физика и отрисовка через скрипты не идут: скрипт получает события и отдаёт команды.</dd></div><div><dt>Где пойдут игры?</dt><dd>На компьютере и в браузере. Телефоны будут позже, консолей пока нет.</dd></div></dl></div>
+</section>
+<section class="latest" id="news" aria-labelledby="news-h">
+  <div class="sec-head"><h2 id="news-h">Дневник разработки</h2><p class="sec-links"><a href="devlog/">Весь дневник</a><a href="feed.xml">RSS</a></p></div>
+  <article class="latest-day"><div><h3><a href="devlog/#2026-10-29-phase-1-is-closed-the-audit-and-the-first-game-o">Фаза 1 закрыта: аудит и первая игра на SDE</a></h3><time datetime="2026-10-29">29 октября</time></div><div class="latest-text"><p>Срез фазы 1 прошёл аудит. Пять проверок агентами и независимое ревью нашли 25 ошибок, три из них критические: утечка памяти скриптов останавливала мир через 15 секунд плотной стрельбы, по ботам, созданным из шаблона, не засчитывались попадания в голову, а после перемотки замолкали события анимации. Всё исправлено, движок помечен стабильным.</p><p>Долгий прогон в 60 000 тиков совпадает бит в бит в нативной сборке и в браузере.</p><p>Landslide теперь работает на SDE. Агенты перенесли игру один в один: тесты сверяют каждое число с оригиналом. Дальше игра растёт: обвал из обломков, семь биомов, призрак лучшего забега. Следом на SDE переезжают «За край» и Sky Lantern.</p><p>К вечеру многое из этого уже в игре. Обвал крушит мир: платформы рассыпаются на обломки, а перед кромкой обвала бегут трещины. Семь биомов: луг, холмы, каньон, ледник, пещера, вулкан и долина, у каждого свой свет и свой фон. Поверхности стали разными: лёд не держит клин, дерево держит его с любой стороны, кристалл отбивает обратно. Приземления трясут камеру, от сильного удара игра на миг замирает, а после падения прыжок сразу начинает новый забег.</p></div></article>
+</section>
+</main>
+<footer class="foot">
+  <div class="foot-in">
+    <p>© 2026 SuperDuper Engine. Сайт без счётчиков и рекламы.</p>
+    <p><a href="mailto:info@superduperengine.top">info@superduperengine.top</a> <a href="feed.xml">RSS</a></p>
+  </div>
+</footer>
+<script src="../assets/demo-data.js" defer></script>
+<script src="../assets/demos.js" defer></script>
+<script src="../assets/demo-player.js" defer></script>
+<script src="../assets/sde.js" defer></script>
+</body>
+</html>

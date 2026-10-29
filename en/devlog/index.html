@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Devlog. SuperDuper Engine</title>
+<meta name="description" content="How work on the engine is going, day by day.">
+<link rel="canonical" href="https://superduperengine.top/en/devlog/">
+<link rel="alternate" hreflang="ru" href="https://superduperengine.top/ru/devlog/">
+<link rel="alternate" hreflang="en" href="https://superduperengine.top/en/devlog/">
+<link rel="alternate" hreflang="x-default" href="https://superduperengine.top/en/devlog/">
+<link rel="alternate" type="application/rss+xml" title="SuperDuper Engine devlog" href="../feed.xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Devlog. SuperDuper Engine">
+<meta property="og:description" content="How work on the engine is going, day by day.">
+<meta property="og:url" content="https://superduperengine.top/en/devlog/">
+<meta property="og:image" content="https://superduperengine.top/assets/brand/og-en.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0B0D1E" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F3F4F9" media="(prefers-color-scheme: light)">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../assets/brand/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../../assets/brand/apple-touch-icon.png">
+<script>
+  // The theme chosen by hand wins over the system's; set before the first paint.
+  (function () { try { var t = localStorage.getItem("sde.theme"); if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t); } catch (e) {} })();
+</script>
+<link rel="preload" href="../../assets/fonts/geologica-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../assets/sde.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <div class="bar-in">
+    <a class="brand" href="../" aria-label="SuperDuper Engine"><svg class="brand-mark" viewBox="0 0 256 256" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect width="256" height="256" rx="60" fill="#2E46E6"/><path d="M48 162V122C48 88 82 66 128 66C174 66 208 88 208 122V162Z" fill="#FF8CC8"/><path d="M70 106C72 92 84 81 99 77" fill="none" stroke="#F0EEE9" stroke-width="8" stroke-linecap="round" opacity=".55"/><ellipse cx="104" cy="126" rx="22" ry="26" fill="#F0EEE9"/><g class="pupil" data-cx="104" data-cy="126" transform="translate(0 5)"><circle cx="104" cy="126" r="11" fill="#0B0D1E"/><circle cx="101" cy="122" r="3.5" fill="#F0EEE9"/></g><ellipse cx="152" cy="126" rx="22" ry="26" fill="#F0EEE9"/><g class="pupil" data-cx="152" data-cy="126" transform="translate(0 5)"><circle cx="152" cy="126" r="11" fill="#0B0D1E"/><circle cx="149" cy="122" r="3.5" fill="#F0EEE9"/></g><rect x="28" y="158" width="200" height="28" rx="14" fill="#F0EEE9"/></svg><span class="wordmark"><b>SuperDuper</b> Engine</span></a>
+    <nav class="nav" aria-label="Sections">
+      <a href="../#demo">Demo</a><a href="../#games">Games</a><a href="./">Devlog</a><a href="../#how">How it works</a><a href="../#plan">Roadmap</a>
+    </nav>
+    <div class="bar-tools">
+      <button class="theme-btn" type="button" data-theme-toggle data-label-system="Theme follows the system" data-label-dark="Dark theme" data-label-light="Light theme" aria-label="Theme follows the system" title="Theme follows the system">
+        <span class="ti ti-system"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor"/></svg></span><span class="ti ti-dark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z" fill="currentColor"/></svg></span><span class="ti ti-light"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+      </button>
+      <a class="lang" href="../../ru/devlog/" data-lang="ru" hreflang="ru" lang="ru">Русский</a>
+    </div>
+  </div>
+</header>
+<main id="main" class="devlog">
+  <div class="devlog-head"><h1>Devlog</h1><p class="lead">How work on the engine is going, day by day.</p><p class="sec-links"><a href="../">Home</a><a href="../feed.xml">RSS</a></p></div>
+  <section class="day" id="2026-10-29-phase-1-is-closed-the-audit-and-the-first-game-o"><h2>Phase 1 is closed: the audit and the first game on SDE<time datetime="2026-10-29">29 October 2026</time></h2><div class="entry"><p>The Phase 1 cut went through an audit. Five checks by agents and an independent review found 25 bugs, three of them critical: a script memory leak stopped the world after 15 seconds of heavy fire, headshots did not count on bots spawned from templates, and animation events went silent after a rewind. All are fixed, and the engine is tagged stable.</p><p>A long run of 60,000 ticks matches bit for bit between the native build and the browser.</p><p>Landslide now runs on SDE. Agents ported it one to one, with tests that check every number against the original. Next the game grows: a collapse into debris, seven biomes, a ghost of your best run. Over the Edge and Sky Lantern move to SDE next.</p><p>By the evening much of it is in the game. The collapse breaks the world apart: platforms crumble into tumbling debris, and cracks run ahead of the edge. Seven biomes are in: meadow, hills, canyon, glacier, cave, volcano and valley, each with its own light and backdrop. Surfaces matter now: ice never holds the wedge, wood holds it on any face, crystal bounces it back. Landings shake the camera, a hard hit freezes the action for an instant, and a jump after a fall starts a new run at once.</p></div></section><section class="day" id="2026-10-28-day-five"><h2>Day five<time datetime="2026-10-28">28 October 2026</time></h2><div class="entry"><p>The day was about saves: they must not break in any future version of a game. A save is now a plain list of facts: where the hero stands, how much health is left, what has already happened in the story. If a new version drops something, the game loads the rest and shows what went missing. And the file itself survives the computer switching off in the middle of a save.</p><p>The engine also got projectiles: a bullet goes through a thin board or ricochets, a rocket chases its target, an explosion throws fragments. Controls can now be remapped, and menus follow the gamepad. By night the agents began putting everything from these days into one test game: once it passes, the engine is due for a big audit.</p></div></section><section class="day" id="2026-10-27-day-four"><h2>Day four<time datetime="2026-10-27">27 October 2026</time></h2><div class="entry"><p>The busiest day so far: six agents worked on the engine at once, and every change went into the history only after its test passed. A character you can steer with a gamepad arrived, and so did a running fox. Hits got heavier: the action freezes for a moment and the camera shakes. The picture gained water, grass in the wind and up to 256 lights in a frame, and games got menus and dialogues.</p><p>Meanwhile a cloud review went through the new code, and the agents are closing what it found one by one. And the engine got a logo: a gumdrop with eyes, peeking over an edge.</p></div></section><section class="day" id="2026-10-26-day-three"><h2>Day three<time datetime="2026-10-26">26 October 2026</time></h2><div class="entry"><p>We got to the looks. Terrain from a height map arrived, along with models from Blender with all their textures, lamps, sparks and a crackling campfire. Game logic is now written in TypeScript, and a script can change while the game runs. When an agent edits the world, the change shows up in the open editor right away, and you can undo it.</p></div></section><section class="day" id="2026-10-25-day-two"><h2>Day two<time datetime="2026-10-25">25 October 2026</time></h2><div class="entry"><p>The engine learned to behave the same on a computer and in a browser: the same input gives the same result, and the picture matches. The editor arrived. You can run the game in it, pause and step through it, and the Report button saves the moment where something went wrong. The ball and the slide on the home page were computed by the engine itself.</p></div></section><section class="day" id="2026-10-24-day-one"><h2>Day one<time datetime="2026-10-24">24 October 2026</time></h2><div class="entry"><p>We woke up with an idea: a game engine where AI agents do most of the work, while a person sets the direction and decides what is fun. We spent the day working out what it should be and writing the decisions down. The main one: the world is stored as text, so an agent can read and edit it like ordinary code.</p></div></section>
+</main>
+<footer class="foot">
+  <div class="foot-in">
+    <p>© 2026 SuperDuper Engine. No trackers, no ads.</p>
+    <p><a href="mailto:info@superduperengine.top">info@superduperengine.top</a> <a href="../feed.xml">RSS</a></p>
+  </div>
+</footer>
+<script src="../../assets/sde.js" defer></script>
+</body>
+</html>

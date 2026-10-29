@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Проверка доступа · Super Duper Engine</title>
+  <style>
+    :root { --bg: #07090c; --fg: #eef2f6; --muted: #a3afbf; --ok: #ffb23f; --bad: #ff6b5a; }
+    body { margin: 0; padding: 24px 16px; background: var(--bg); color: var(--fg); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+    main { max-width: 640px; margin: 0 auto; }
+    h1 { margin: 0 0 6px; font-size: 22px; }
+    p { margin: 0 0 16px; color: var(--muted); }
+    table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+    td { padding: 8px 6px; border-top: 1px solid rgba(255, 255, 255, .1); }
+    td:last-child { text-align: right; }
+    .ok { color: var(--ok); } .bad { color: var(--bad); }
+    #verdict { margin-top: 18px; padding: 12px 14px; border-radius: 10px; background: rgba(255, 255, 255, .06); color: var(--fg); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Проверка доступа к сайту</h1>
+    <p>Страница грузит файлы разного размера и показывает, какие дошли. Откройте её без VPN и пришлите снимок экрана.</p>
+    <table id="rows"></table>
+    <div id="verdict">Проверяю…</div>
+  </main>
+  <script>
+    // Small files pass where a filter cuts connections after the first ~16 KB; big ones then hang.
+    var FILES = [
+      ["Значок, 1 КБ", "/favicon.svg"],
+      ["Обложка игры, ~25 КБ", "/assets/games/edge.jpg"],
+      ["Плеер демо, крупный", "/assets/demo-player.js"],
+      ["Запись демо, крупная", "/assets/demo-data.js"],
+      ["Таблица рекордов (Netlify)", "https://animated-squirrel-692fce.netlify.app/.netlify/functions/scores?game=edge"],
+    ];
+    var rows = document.getElementById("rows"), results = [];
+    function check(label, url) {
+      var row = rows.insertRow(), name = row.insertCell(), cell = row.insertCell(), t0 = performance.now();
+      name.textContent = label;
+      cell.textContent = "…";
+      var abort = new AbortController(), timer = setTimeout(function () { abort.abort(); }, 12000);
+      return fetch(url + (url.indexOf("?") < 0 ? "?" : "&") + "t=" + Date.now(), { cache: "no-store", signal: abort.signal })
+        .then(function (r) { return r.arrayBuffer().then(function (b) { return { ok: r.ok, bytes: b.byteLength }; }); })
+        .then(function (r) {
+          var ms = Math.round(performance.now() - t0);
+          cell.textContent = (r.ok ? "дошёл" : "ошибка") + " · " + Math.round(r.bytes / 1024) + " КБ · " + ms + " мс";
+          cell.className = r.ok ? "ok" : "bad";
+          results.push({ ok: r.ok, bytes: r.bytes });
+        })
+        .catch(function () {
+          cell.textContent = "не дошёл за 12 с";
+          cell.className = "bad";
+          results.push({ ok: false, bytes: 0 });
+        })
+        .finally(function () { clearTimeout(timer); });
+    }
+    FILES.reduce(function (p, f) { return p.then(function () { return check(f[0], f[1]); }); }, Promise.resolve()).then(function () {
+      var small = results[0].ok, bigFailed = results.slice(2, 4).some(function (r) { return !r.ok; });
+      document.getElementById("verdict").textContent = !small ? "Сайт не открывается совсем: похоже на блокировку адреса."
+        : bigFailed ? "Мелкие файлы проходят, крупные застревают: похоже на ограничение соединений у провайдера."
+        : "Всё дошло: сайт отсюда открывается.";
+    });
+  </script>
+</body>
+</html>
